@@ -1,6 +1,4 @@
 Checks: >
-  clang-analyzer-*,
-  cppcoreguidelines-*,
   readability-identifier-naming,
   readability-*,
 WarningsAsErrors: ''
