@@ -2,7 +2,7 @@ name: build action
 on: [push, pull_request]
 jobs:
   build-cmake:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         compiler: [g++, clang++]
@@ -18,5 +18,17 @@ jobs:
           git submodule update --init --recursive
       - name: build
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_CXX_COMPILER=${{matrix.compiler}}
+          cmake -S . -B build -DCMAKE_BUILD_TARGET=GiantDad -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_CXX_COMPILER=${{matrix.compiler}}
+          cmake --build build
+  tests:
+    needs: build-cmake
+    runs-on: ubuntu-latest
+    if: ${{ success() }}
+    steps:
+      - name: clone
+        id: checkout
+        uses: actions/checkout@v3
+      - name: build
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TARGET=GiantDadTests -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_CXX_COMPILER=${{matrix.compiler}}
           cmake --build build
