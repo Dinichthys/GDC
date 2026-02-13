@@ -23,6 +23,10 @@ jobs:
   tests:
     needs: build-cmake
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler: [g++, clang++]
+        build_type: [Debug, Release]
     if: ${{ success() }}
     steps:
       - name: clone
