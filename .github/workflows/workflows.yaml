@@ -1,0 +1,41 @@
+name: build action
+on: [push, pull_request]
+jobs:
+  build-cmake:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler: [g++, clang++]
+        build_type: [Debug, Release]
+    steps:
+      - name: clone
+        id: checkout
+        uses: actions/checkout@v4
+      - name: install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake catch2
+      - name: build
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TARGET=GiantDad -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_CXX_COMPILER=${{matrix.compiler}}
+          cmake --build build
+  tests:
+    needs: build-cmake
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler: [g++, clang++]
+        build_type: [Debug, Release]
+    if: ${{ success() }}
+    steps:
+      - name: clone
+        id: checkout
+        uses: actions/checkout@v3
+      - name: install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake catch2
+      - name: build
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TARGET=GiantDadTests -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_CXX_COMPILER=${{matrix.compiler}}
+          cmake --build build
