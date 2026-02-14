@@ -56,7 +56,6 @@ add_library(${ONNX_PROTO_EXEC}
     ${ONNX_PROTO_SRCS}
 )
 
-
 target_include_directories(${ONNX_PROTO_EXEC}
     PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}
@@ -67,6 +66,12 @@ target_link_libraries(${ONNX_PROTO_EXEC}
     PUBLIC
         protobuf::libprotobuf
 )
+
+# -----------------------------
+# CLI11
+# -----------------------------
+
+add_subdirectory(external/CLI11)
 
 # -----------------------------
 # Compiler executable
@@ -101,7 +106,6 @@ target_compile_options(${PROJECT_NAME}
 
 target_link_options(${PROJECT_NAME}
     PRIVATE
-        -lstdc++
         -march=native
         $<$<CONFIG:Debug>:${DEBUG_COMPILE_OPTIONS}>
         $<$<CONFIG:Release>:${RELEASE_COMPILE_OPTIONS}>
@@ -109,6 +113,7 @@ target_link_options(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
+    CLI11::CLI11
     ${ONNX_PROTO_EXEC}
 )
 
@@ -140,6 +145,7 @@ target_include_directories(${TEST_EXEC_NAME}
 
 target_link_libraries(${TEST_EXEC_NAME}
     PRIVATE Catch2::Catch2WithMain
+    CLI11::CLI11
     ${ONNX_PROTO_EXEC}
 )
 
@@ -152,7 +158,6 @@ target_compile_options(${TEST_EXEC_NAME}
 
 target_link_options(${TEST_EXEC_NAME}
     PRIVATE
-        -lstdc++
         -march=native
         $<$<CONFIG:Debug>:${DEBUG_COMPILE_OPTIONS}>
         $<$<CONFIG:Release>:${RELEASE_COMPILE_OPTIONS}>
