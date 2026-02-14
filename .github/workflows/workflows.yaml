@@ -14,7 +14,7 @@ jobs:
       - name: install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake catch2
+          sudo apt-get install -y build-essential cmake catch2 protobuf-compiler libprotobuf-dev libcli11-dev
       - name: build
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TARGET=GiantDad -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_CXX_COMPILER=${{matrix.compiler}}
@@ -34,7 +34,7 @@ jobs:
       - name: install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake catch2
+          sudo apt-get install -y build-essential cmake catch2 protobuf-compiler libprotobuf-dev libcli11-dev
       - name: build
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TARGET=GiantDadTests -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_CXX_COMPILER=${{matrix.compiler}}
