@@ -1,4 +1,4 @@
-#include "CLI11.hpp"
+#include <CLI/App.hpp>
 #include <onnx.pb.h>
 
 #include "graph/Graph.hpp"
@@ -15,6 +15,5 @@ int main(int argc, char **argv) {
   GiantGraph::GiantGraph Graph;
   GiantGraph::GraphBuilder GBuilder{ModelFileName, Graph};
 
-  
   return 0;
 }

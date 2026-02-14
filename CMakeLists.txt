@@ -50,20 +50,25 @@ protobuf_generate_cpp(
     ${ONNX_PROTO_FILE}
 )
 
-add_library(onnx_proto
+set(ONNX_PROTO_EXEC onnx_proto)
+
+add_library(${ONNX_PROTO_EXEC}
     ${ONNX_PROTO_SRCS}
 )
 
-target_include_directories(onnx_proto
+
+target_include_directories(${ONNX_PROTO_EXEC}
     PUBLIC
         ${CMAKE_CURRENT_BINARY_DIR}
         ${ONNX_PROTO_DIR}
 )
 
-target_link_libraries(onnx_proto
+target_link_libraries(${ONNX_PROTO_EXEC}
     PUBLIC
         protobuf::libprotobuf
 )
+
+find_package()
 
 # -----------------------------
 # Compiler executable
@@ -73,6 +78,7 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
     src/graph/GraphBuilder.cpp
 )
+
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -105,7 +111,7 @@ target_link_options(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-    onnx_proto
+    ${ONNX_PROTO_EXEC}
 )
 
 # -----------------------------
@@ -136,7 +142,7 @@ target_include_directories(${TEST_EXEC_NAME}
 
 target_link_libraries(${TEST_EXEC_NAME}
     PRIVATE Catch2::Catch2WithMain
-    onnx_proto
+    ${ONNX_PROTO_EXEC}
 )
 
 target_compile_options(${TEST_EXEC_NAME}

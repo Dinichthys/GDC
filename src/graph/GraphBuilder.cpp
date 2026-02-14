@@ -19,5 +19,4 @@ void GraphBuilder::buildGraph() {
     }
   }
 }
-
 } // namespace GiantGraph
