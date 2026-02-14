@@ -68,8 +68,6 @@ target_link_libraries(${ONNX_PROTO_EXEC}
         protobuf::libprotobuf
 )
 
-find_package()
-
 # -----------------------------
 # Compiler executable
 # -----------------------------
