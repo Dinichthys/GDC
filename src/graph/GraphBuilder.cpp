@@ -8,14 +8,17 @@ void GraphBuilder::buildGraph() {
   const auto &Graph = Model.graph();
 
   for (const auto &Node : Graph.node()) {
-    std::cout << "Op: " << Node.op_type() << "\n";
+    std::cout << "Op: " << Node.op_type() << '\n';
     // TODO add node on op
     for (const auto &Input : Node.input()) {
-      std::cout << "  Input: " << Input << "\n";
+      std::cout << "  Input: " << Input << '\n';
     }
     // TODO fill info about node on those ones
     for (const auto &Output : Node.output()) {
-      std::cout << "  Output: " << Output << "\n";
+      std::cout << "  Output: " << Output << '\n';
+    }
+    for (const auto &Attr : Node.attribute()) {
+      std::cout << "  Attribute: " << Attr.name() << '\n';
     }
   }
 }

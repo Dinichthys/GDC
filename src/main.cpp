@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
 
   GiantGraph::GiantGraph Graph;
   GiantGraph::GraphBuilder GBuilder{ModelFileName, Graph};
+  GBuilder.buildGraph();
 
   return 0;
 }

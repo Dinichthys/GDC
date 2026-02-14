@@ -21,7 +21,8 @@ public:
 
     std::ifstream Input(Path, std::ios::binary);
     if (!Model.ParseFromIstream(&Input)) {
-      throw std::runtime_error("Failed to parse ONNX model");
+      throw std::runtime_error(
+          "Failed to parse YOUR ONNX model, git gut, casul");
     }
   }
 
