@@ -71,6 +71,7 @@ target_link_libraries(onnx_proto
 
 add_executable(${PROJECT_NAME}
     src/main.cpp
+    src/graph/GraphBuilder.cpp
 )
 set_target_properties(${PROJECT_NAME}
     PROPERTIES
@@ -113,6 +114,8 @@ find_package(Catch2 3 REQUIRED)
 
 add_executable(${TEST_EXEC_NAME}
     src/main.cpp
+    src/graph/GraphBuilder.cpp
+
 )
 
 set_target_properties(${TEST_EXEC_NAME}
