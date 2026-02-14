@@ -7,7 +7,7 @@
 namespace GiantGraph {
 class GiantGraph {
 public:
-  GiantGraph();
+  GiantGraph() {};
   ~GiantGraph() = default;
 private:
 

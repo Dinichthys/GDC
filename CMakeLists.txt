@@ -97,6 +97,7 @@ target_compile_options(${PROJECT_NAME}
 
 target_link_options(${PROJECT_NAME}
     PRIVATE
+        -lstdc++
         -march=native
         $<$<CONFIG:Debug>:${DEBUG_COMPILE_OPTIONS}>
         $<$<CONFIG:Release>:${RELEASE_COMPILE_OPTIONS}>
@@ -147,6 +148,7 @@ target_compile_options(${TEST_EXEC_NAME}
 
 target_link_options(${TEST_EXEC_NAME}
     PRIVATE
+        -lstdc++
         -march=native
         $<$<CONFIG:Debug>:${DEBUG_COMPILE_OPTIONS}>
         $<$<CONFIG:Release>:${RELEASE_COMPILE_OPTIONS}>
