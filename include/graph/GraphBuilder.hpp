@@ -9,8 +9,7 @@
 namespace GiantGraph {
 class GraphBuilder {
 public:
-  explicit GraphBuilder(const std::string &Path, GiantGraph &Graph)
-      : OutputGraph(Graph) {
+  explicit GraphBuilder(const std::string &Path) {
     loadModel(Path);
   }
   ~GraphBuilder() = default;
@@ -21,17 +20,15 @@ public:
 
     std::ifstream Input(Path, std::ios::binary);
     if (!Model.ParseFromIstream(&Input)) {
-      throw std::runtime_error("Failed to parse ONNX model");
+      throw std::runtime_error(
+          "Failed to parse YOUR ONNX model, git gut, casul");
     }
   }
 
-  // same reasoning as above
-  void setOutputGraph(GiantGraph &Graph) { OutputGraph = Graph; };
 
-  void buildGraph();
+  GiantGraph buildGraph();
 
 private:
   onnx::ModelProto Model;
-  GiantGraph &OutputGraph;
 };
 } // namespace GiantGraph

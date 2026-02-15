@@ -80,6 +80,8 @@ add_subdirectory(external/CLI11)
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/graph/GraphBuilder.cpp
+    src/graph/Value.cpp
+    src/graph/DumpGraphViz.cpp
 )
 
 set_target_properties(${PROJECT_NAME}
@@ -123,9 +125,7 @@ target_link_libraries(${PROJECT_NAME}
 find_package(Catch2 3 REQUIRED)
 
 add_executable(${TEST_EXEC_NAME}
-    src/main.cpp
-    src/graph/GraphBuilder.cpp
-
+    tests/Test.cpp
 )
 
 set_target_properties(${TEST_EXEC_NAME}

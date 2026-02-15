@@ -1,6 +1,5 @@
 Checks: >
   readability-identifier-naming,
-  readability-*,
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
 FormatStyle: file
