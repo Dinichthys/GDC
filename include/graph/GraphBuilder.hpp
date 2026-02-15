@@ -9,8 +9,7 @@
 namespace GiantGraph {
 class GraphBuilder {
 public:
-  explicit GraphBuilder(const std::string &Path, GiantGraph &Graph)
-      : OutputGraph(Graph) {
+  explicit GraphBuilder(const std::string &Path) {
     loadModel(Path);
   }
   ~GraphBuilder() = default;
@@ -26,13 +25,10 @@ public:
     }
   }
 
-  // same reasoning as above
-  void setOutputGraph(GiantGraph &Graph) { OutputGraph = Graph; };
 
-  void buildGraph();
+  GiantGraph buildGraph();
 
 private:
   onnx::ModelProto Model;
-  GiantGraph &OutputGraph;
 };
 } // namespace GiantGraph
