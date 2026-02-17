@@ -7,7 +7,6 @@
 #include "graph/GraphBuilder.hpp"
 #include "graph/GraphVizard.hpp"
 
-
 int main(int argc, char **argv) {
   CLI::App CLIApp;
   std::string ModelFileName;

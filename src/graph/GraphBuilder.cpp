@@ -18,14 +18,16 @@ GiantGraph GraphBuilder::buildGraph() {
     Operation::OperationName Name{Node.op_type()};
 
     std::vector<OpOperand> Operands;
-    Operands.reserve(Node.input_size());
-    for (auto I = 0; I < Node.input_size(); ++I) {
+    auto InputSize = Node.input_size();
+    Operands.reserve(InputSize);
+    for (auto I = 0; I < InputSize; ++I) {
       Operands.emplace_back(); // might have use in future
     }
 
     std::vector<OpResult> Results;
-    Results.reserve(Node.output_size());
-    for (auto I = 0; I < Node.output_size(); ++I) {
+    auto OutputSize = Node.output_size();
+    Results.reserve(OutputSize);
+    for (auto I = 0; I < OutputSize; ++I) {
       Results.emplace_back(ResCounter);
       ++ResCounter;
     }

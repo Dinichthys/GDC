@@ -1,1 +1,4 @@
-![](https://www.gameskinny.com/wp-content/uploads/gameskinnyc/g/i/a/giant-dad-dominates-black-white-a8b52.jpg)
+![](images/Overview.png)
+
+This is an educational project for Tensor Compilers course in MIPT. Made 
+for sole purpose of getting gud (or at least better).

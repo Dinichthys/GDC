@@ -8,24 +8,25 @@
 namespace GraphVizardry {
 
 void dumpGraphViz(const GiantGraph::GiantGraph &GiantGraph) {
-  std::string GraphVizString =
-      "digraph g {\n";
+  std::string GraphVizString = "digraph g {\n";
 
   for (auto &Node : GiantGraph.nodes()) {
     auto RawAddr = reinterpret_cast<uintptr_t>(Node.get());
     GraphVizString += "node" + std::to_string(RawAddr) +
                       " [\"label\"=\"{<optype> " + Node->getName();
-    for (unsigned I = 0; I < Node->getNumOperands(); ++I) {
+    auto NumOperands = Node->getNumOperands();
+    for (unsigned I = 0; I < NumOperands; ++I) {
       GraphVizString +=
           " | <op" + std::to_string(I) + "> Operand" + std::to_string(I);
     }
-    for (unsigned I = 0; I < Node->getNumResults(); ++I) {
+    auto NumResults = Node->getNumResults();
+    for (unsigned I = 0; I < NumResults; ++I) {
       GraphVizString +=
           " | <res" + std::to_string(I) + "> Result" + std::to_string(I);
     }
     GraphVizString += "}\"\nshape = \"record\"];\n";
 
-    for (unsigned I = 0; I < Node->getNumResults(); ++I) {
+    for (unsigned I = 0; I < NumResults; ++I) {
       auto &Res = Node->getResultRef(I);
       for (auto &Use : Res.getUses()) {
         GraphVizString +=

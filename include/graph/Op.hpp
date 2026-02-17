@@ -7,20 +7,17 @@ template <typename ExactOp>
 
 class Op {
 protected:
-    Operation* Oper;
+  Operation *Oper;
 
 public:
-    explicit Op(Operation* Operation) : Oper(Operation) {}
+  explicit Op(Operation *Operation) : Oper(Operation) {}
 
-    Operation* getOperation() const { return Oper; }
+  Operation *getOperation() const { return Oper; }
 
-    const std::string& getName() const {
-        return Oper->getName();
-    }
-    
-    static bool classof(Operation* operation) {
-        return operation->getName() == ExactOp::getOperationName();
-    }
+  const std::string &getName() const { return Oper->getName(); }
 
+  static bool classof(Operation *operation) {
+    return operation->getName() == ExactOp::getOperationName();
+  }
 };
 } // namespace GiantGraph
