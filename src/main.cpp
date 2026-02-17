@@ -5,7 +5,7 @@
 
 #include "graph/Graph.hpp"
 #include "graph/GraphBuilder.hpp"
-
+#include "graph/GraphVizard.hpp"
 
 int main(int argc, char **argv) {
   CLI::App CLIApp;
@@ -14,8 +14,9 @@ int main(int argc, char **argv) {
       ->required();
   CLI11_PARSE(CLIApp, argc, argv);
 
-  GiantGraph::GiantGraph Graph;
-  GiantGraph::GraphBuilder GBuilder{ModelFileName, Graph};
+  GiantGraph::GraphBuilder GBuilder{ModelFileName};
+  GiantGraph::GiantGraph Graph = GBuilder.buildGraph();
+  GraphVizardry::dumpGraphViz(Graph);
 
   return 0;
 }
