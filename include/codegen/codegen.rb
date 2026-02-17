@@ -39,51 +39,69 @@ end
 
 def generate_input(input, index)
     name = input["name"]
+    if input.key?("optional")
+    <<~CPP
+    OpOperand get#{name}() {
+        assert(Oper->getNumOperands() >= index);
+        return Oper->getOperandValue(#{index});
+    }
+    CPP
+    else
     <<~CPP
     OpOperand get#{name}() {
         return Oper->getOperandValue(#{index});
     }
     CPP
+    end
 end
 
 def generate_output(output, index)
     name = output["name"]
+    if output.key?("optional")
+    <<~CPP
+    OpOperand get#{name}() {
+        assert(Oper->getNumResults() >= index);
+        return Oper->getResultValue(#{index});
+    }
+    CPP
+    else
     <<~CPP
     OpResult get#{name}() {
         return Oper->getResultValue(#{index});
     }
   CPP
+  end
 end
 
 
 def generate_attr(attr, op_name)
-    # name = attr["name"]
-    # type = YAML_TO_CPP_TYPESHIT[attr["type"]]
-    # if (attr.key?("default"))
-        # formatted_val = format_value(attr["default"])
-#     <<~CPP
-#         #{type} #{name}() const  {
-#             auto it = node_->attrs_.find("#{name}");
-#             if (it == node_->attrs_.end()) {
-#
-#             std::cout << "Got #{name} attr" << " by default." << std::endl;
-#                 return #{type}(#{formatted_val});
-#             }
-#
-#             std::cout << "Got #{name} attr." << std::endl;
-#             return std::get<#{type}>(it->second);
-#         }
-#     CPP
-#     else
-#     <<~CPP
-#         #{type} #{name}() const  {
-#             auto it = node_->attrs_.find("#{name}");
-#             assert(it == node_->attrs_.end());
-#             std::cout << "Got #{name} attr" << std::endl;
-#             return std::get<#{type}>(it->second);
-#         }
-#     CPP
-    # end
+    name = attr["name"]
+    type = YAML_TO_CPP_TYPESHIT[attr["type"]]
+    if (attr.key?("default"))
+        formatted_val = format_value(attr["default"])
+    <<~CPP
+        #{type} get#{name.capitalize}() const  {
+            auto it = findAttribute("#{name}");
+            if (it == attributeEnd()) {
+
+            std::cout << "Got #{name} attr" << " by default." << std::endl;
+                return #{type}(#{formatted_val});
+            }
+
+            std::cout << "Got #{name} attr." << std::endl;
+            return std::get<#{type}>(it->second);
+        }
+    CPP
+    else
+    <<~CPP
+        #{type} #{name}() const  {
+            auto it = findAttribute("#{name}");
+            assert(it == attributesEnd());
+            std::cout << "Got #{name} attr" << std::endl;
+            return std::get<#{type}>(it->second);
+        }
+    CPP
+    end
 end
 
 def generate_op(op)
@@ -102,7 +120,7 @@ def generate_op(op)
 
     attrs = []
     if op["attributes"]
-        attrs = op["attributes"].map { |attr| generate_attr(attr, name) }
+        attrs = op["attributes"].each_with_index.map { |attr| generate_attr(attr, name) }
     end
 
     <<~CPP

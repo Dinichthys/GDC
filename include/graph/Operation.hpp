@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "Value.hpp"
 
@@ -22,7 +23,7 @@ private:
   std::vector<OpResult> Results;
 
   //REVIEW -  maybe need smth similar to std::vector<std::string, Attribute> Attributes;
-  std::vector<Attribute> Attributes;
+  std::unordered_map<std::string, Attribute> Attributes;
 public:
   Operation(OperationName Name, std::vector<OpOperand> Operands_,
             std::vector<OpResult> Results_)
@@ -69,6 +70,20 @@ public:
     assert(Num < Results.size());
     return Results[Num];
   }
+
+  auto findAttribute(const std::string& AttrName) {
+    return Attributes.find(AttrName);
+  }
+
+
+  auto findAttribute(const std::string& AttrName) const {
+    return Attributes.find(AttrName);
+  }
+
+  auto attributesEnd() {
+    return Attributes.end();
+  }
+
 
   size_t getNumResults() const { return Results.size(); }
 
