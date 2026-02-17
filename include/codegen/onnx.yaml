@@ -1,0 +1,163 @@
+#NOTE -  look for official spec at https://onnx.ai/onnx/operators/
+
+- name: Conv
+  inputs:
+    - name: X
+
+    - name: W
+
+    - name: B
+      optional: true
+
+  outputs:
+    - name: Y
+
+  attributes:
+    - name: kernel_shape
+      type: int64[]
+      required: true
+
+    - name: group
+      type: ints
+      default: 1
+
+    - name: dilations
+      type: int64[]
+      default: [1, 1]
+
+    - name: pads
+      type: int64[]
+      default: [0, 0]
+
+    - name: strides
+      type: int64[]
+      default: [1, 1]
+
+#######################################################
+
+- name: Gemm
+  inputs:
+    - name: A
+
+    - name: B
+
+    - name: C
+      optional: true
+
+  outputs:
+    - name: Y
+
+  attributes:
+    - name: alpha
+      type: float32
+      default: 1.0
+
+
+    - name: beta
+      type: float32
+      default: 1.0
+
+    - name: transA
+      type: int64
+      default: 0
+
+    - name: transB
+      type: int64
+      default: 0
+
+
+#######################################################
+
+- name: Add
+  inputs:
+    - name: A
+    - name: B
+
+  outputs:
+    - name: C
+  attributes:
+
+
+#######################################################
+
+- name: Relu
+  inputs:
+    - name: X
+
+  outputs:
+    - name: Y
+
+  attributes:
+
+
+#######################################################
+
+- name: Mul
+  inputs:
+    - name: A
+
+    - name: B
+
+  outputs:
+    - name: C
+
+  attributes:
+
+
+#######################################################
+
+- name: MatMul
+  inputs:
+    - name: A
+
+    - name: B
+
+  outputs:
+    - name: Y
+    #NOTE - maybe add matmul verification syntax ???
+
+  attributes:
+
+
+#######################################################
+
+- name: MaxPool
+  inputs:
+    - name: X
+
+  outputs:
+    - name: Y
+
+    - name: Indices
+      optional: true
+
+  attributes:
+    - name: kernel_shape
+      type: int64[]
+      required: true
+
+    - name: auto_pad
+      type: string
+      default: '"NOTSET"'
+
+    - name: ceil_mode
+      type: int64
+      default: 0
+
+    - name: dilations
+      type: int64[]
+      default: [1, 1]
+
+    - name: pads
+      type: int64[]
+      default: [0, 0]
+
+    - name: storage_order
+      type: int64
+      default: 0
+
+    - name: strides
+      type: int64[]
+      default: [1, 1]
+
+#######################################################

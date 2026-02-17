@@ -3,6 +3,7 @@
 #include "graph/Op.hpp"
 #include <memory>
 #include <string>
+
 // This must be generated
 namespace GiantGraph {
 

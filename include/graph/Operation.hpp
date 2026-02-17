@@ -5,6 +5,7 @@
 
 #include "Value.hpp"
 
+
 namespace GiantGraph {
 class Attribute {};
 
@@ -19,8 +20,9 @@ private:
 
   std::vector<OpOperand> Operands;
   std::vector<OpResult> Results;
-  std::vector<Attribute> Attributes;
 
+  //REVIEW -  maybe need smth similar to std::vector<std::string, Attribute> Attributes;
+  std::vector<Attribute> Attributes;
 public:
   Operation(OperationName Name, std::vector<OpOperand> Operands_,
             std::vector<OpResult> Results_)
@@ -38,7 +40,7 @@ public:
 
   OpOperand getOperandValue(size_t Num) const {
     assert(Num < Operands.size());
-    return Operands[Num];    
+    return Operands[Num];
   }
 
   OpOperand& getOperandRef(size_t Num) {
@@ -56,7 +58,7 @@ public:
 
   OpResult getResultValue(size_t Num) const {
     assert(Num < Operands.size());
-    return Results[Num];    
+    return Results[Num];
   }
 
   OpResult& getResultRef(size_t Num) {
