@@ -36,18 +36,17 @@ def generate_footer
     } // namespace GiantGraph
     FOOTER
 end
-
 def generate_input(input, index)
     name = input["name"]
     if input.key?("optional")
-    <<~CPP
+<<-CPP
     OpOperand get#{name}() {
-        assert(Oper->getNumOperands() >= index);
+        assert(Oper->getNumOperands() >= #{index});
         return Oper->getOperandValue(#{index});
     }
     CPP
     else
-    <<~CPP
+<<-CPP
     OpOperand get#{name}() {
         return Oper->getOperandValue(#{index});
     }
@@ -58,52 +57,50 @@ end
 def generate_output(output, index)
     name = output["name"]
     if output.key?("optional")
-    <<~CPP
+<<-CPP
     OpOperand get#{name}() {
-        assert(Oper->getNumResults() >= index);
+        assert(Oper->getNumResults() >= #{index});
         return Oper->getResultValue(#{index});
     }
     CPP
     else
-    <<~CPP
+<<-CPP
     OpResult get#{name}() {
         return Oper->getResultValue(#{index});
     }
-  CPP
-  end
-end
-
-
-def generate_attr(attr, op_name)
-    name = attr["name"]
-    type = YAML_TO_CPP_TYPESHIT[attr["type"]]
-    if (attr.key?("default"))
-        formatted_val = format_value(attr["default"])
-    <<~CPP
-        #{type} get#{name.capitalize}() const  {
-            auto it = findAttribute("#{name}");
-            if (it == attributeEnd()) {
-
-            std::cout << "Got #{name} attr" << " by default." << std::endl;
-                return #{type}(#{formatted_val});
-            }
-
-            std::cout << "Got #{name} attr." << std::endl;
-            return std::get<#{type}>(it->second);
-        }
-    CPP
-    else
-    <<~CPP
-        #{type} #{name}() const  {
-            auto it = findAttribute("#{name}");
-            assert(it == attributesEnd());
-            std::cout << "Got #{name} attr" << std::endl;
-            return std::get<#{type}>(it->second);
-        }
     CPP
     end
 end
 
+def generate_attr(attr, op_name)
+    name = attr["name"]
+    type = YAML_TO_CPP_TYPESHIT[attr["type"]]
+    if attr.key?("default")
+        formatted_val = format_value(attr["default"])
+<<-CPP
+    #{type} get#{name.capitalize}() const  {
+        auto it = findAttribute("#{name}");
+        if (it == attributeEnd()) {
+
+        std::cout << "Got #{name} attr" << " by default." << std::endl;
+            return #{type}(#{formatted_val});
+        }
+
+        std::cout << "Got #{name} attr." << std::endl;
+        return std::get<#{type}>(it->second);
+    }
+    CPP
+    else
+<<-CPP
+    #{type} #{name}() const  {
+        auto it = findAttribute("#{name}");
+        assert(it == attributesEnd());
+        std::cout << "Got #{name} attr" << std::endl;
+        return std::get<#{type}>(it->second);
+    }
+    CPP
+    end
+end
 def generate_op(op)
 
     name = op["name"]
@@ -112,6 +109,8 @@ def generate_op(op)
     if op["inputs"]
         inputs = op["inputs"].each_with_index.map {|input, index| generate_input(input, index)}
     end
+
+    print inputs
 
     outputs = []
     if op["outputs"]
@@ -132,9 +131,9 @@ def generate_op(op)
             return "#{name}"
         }
 
-        #{inputs.join("\n")}
-        #{outputs.join("\n")}
-        #{attrs.join("\n")}
+    #{inputs.join("\n")}
+    #{outputs.join("\n")}
+    #{attrs.join("\n")}
 
         bool verify() const {
             if (Oper->getName() != "#{name}") {
@@ -151,7 +150,7 @@ def generate_op(op)
 
             return true;
         }
-    }
+    };
     CPP
 
 end
