@@ -1,86 +1,90 @@
-#include "graph/Op.hpp"
+#pragma once
+#include <optional>
 #include <memory>
 #include <string>
+#include "graph/Op.hpp"
 namespace GiantGraph {
 
-struct OpConv {
-    explicit Conv(Operation* Oper) : Op<Conv>(Oper) {}
-    ~Conv = default;
+struct OpConv : Op<OpConv>{
+    using Op<OpConv>::Op; // inheriting constructor
+    ~OpConv() = default;
 
     static std::string getOperationName() {
-        return "Conv"
+        return "Conv";
     }
 
-    OpOperand getX() {
+    OpOperand getInput() const {
         return Oper->getOperandValue(0);
     }
 
-    OpOperand getW() {
+    OpOperand getFilter() const {
         return Oper->getOperandValue(1);
     }
 
-    OpOperand getB() {
-        assert(Oper->getNumOperands() >= 2);
-        return Oper->getOperandValue(2);
+    std::optional<OpOperand> getBias() const {
+        return Oper->getNumOperands() > 2 ?
+            std::optional(Oper->getOperandValue(2)) : std::nullopt;
     }
 
-    OpResult getY() {
+    OpResult getOutput() const {
         return Oper->getResultValue(0);
     }
 
-    std::vector<int64_t> getKernelShape() const  {
-        auto it = findAttribute("kernel_shape");
-        assert(it == attributesEnd());
-        std::cout << "Got kernel_shape attr" << std::endl;
-        return std::get<std::vector<int64_t>>(it->second);
+    std::optional<std::vector<int64_t>> getKernelShape() const  {
+        auto it = Oper->findAttribute("kernel_shape");
+        if (it != Oper->attributesEnd()) {
+            std::cout << "Got kernel_shape attr" << std::endl;
+            return it->second.get<std::vector<int64_t>>();
+        }
+        return std::nullopt;
     }
 
-     getGroup() const  {
-        auto it = findAttribute("group");
-        if (it == attributeEnd()) {
+    int64_t getGroup() const  {
+        auto it = Oper->findAttribute("group");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got group attr" << " by default." << std::endl;
-            return (1);
+            return int64_t(1);
         }
 
         std::cout << "Got group attr." << std::endl;
-        return std::get<>(it->second);
+        return it->second.get<int64_t>();
     }
 
     std::vector<int64_t> getDilations() const  {
-        auto it = findAttribute("dilations");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("dilations");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got dilations attr" << " by default." << std::endl;
             return std::vector<int64_t>({1, 1});
         }
 
         std::cout << "Got dilations attr." << std::endl;
-        return std::get<std::vector<int64_t>>(it->second);
+        return it->second.get<std::vector<int64_t>>();
     }
 
     std::vector<int64_t> getPads() const  {
-        auto it = findAttribute("pads");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("pads");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got pads attr" << " by default." << std::endl;
             return std::vector<int64_t>({0, 0});
         }
 
         std::cout << "Got pads attr." << std::endl;
-        return std::get<std::vector<int64_t>>(it->second);
+        return it->second.get<std::vector<int64_t>>();
     }
 
     std::vector<int64_t> getStrides() const  {
-        auto it = findAttribute("strides");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("strides");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got strides attr" << " by default." << std::endl;
             return std::vector<int64_t>({1, 1});
         }
 
         std::cout << "Got strides attr." << std::endl;
-        return std::get<std::vector<int64_t>>(it->second);
+        return it->second.get<std::vector<int64_t>>();
     }
 
 
@@ -89,7 +93,7 @@ struct OpConv {
             return false;
         }
 
-        if (Oper->getNumOperands() != 3) {
+        if (Oper->getNumOperands() != 2) {
             return false;
         }
 
@@ -100,77 +104,77 @@ struct OpConv {
         return true;
     }
 };
-struct OpGemm {
-    explicit Gemm(Operation* Oper) : Op<Gemm>(Oper) {}
-    ~Gemm = default;
+struct OpGemm : Op<OpGemm>{
+    using Op<OpGemm>::Op; // inheriting constructor
+    ~OpGemm() = default;
 
     static std::string getOperationName() {
-        return "Gemm"
+        return "Gemm";
     }
 
-    OpOperand getA() {
+    OpOperand getLhs() const {
         return Oper->getOperandValue(0);
     }
 
-    OpOperand getB() {
+    OpOperand getRhs() const {
         return Oper->getOperandValue(1);
     }
 
-    OpOperand getC() {
-        assert(Oper->getNumOperands() >= 2);
-        return Oper->getOperandValue(2);
+    std::optional<OpOperand> getBias() const {
+        return Oper->getNumOperands() > 2 ?
+            std::optional(Oper->getOperandValue(2)) : std::nullopt;
     }
 
-    OpResult getY() {
+    OpResult getOutput() const {
         return Oper->getResultValue(0);
     }
 
     float getAlpha() const  {
-        auto it = findAttribute("alpha");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("alpha");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got alpha attr" << " by default." << std::endl;
             return float(1.0f);
         }
 
         std::cout << "Got alpha attr." << std::endl;
-        return std::get<float>(it->second);
+        return it->second.get<float>();
     }
 
     float getBeta() const  {
-        auto it = findAttribute("beta");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("beta");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got beta attr" << " by default." << std::endl;
             return float(1.0f);
         }
 
         std::cout << "Got beta attr." << std::endl;
-        return std::get<float>(it->second);
+        return it->second.get<float>();
     }
 
     int64_t getTransa() const  {
-        auto it = findAttribute("transA");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("transA");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got transA attr" << " by default." << std::endl;
             return int64_t(0);
         }
 
         std::cout << "Got transA attr." << std::endl;
-        return std::get<int64_t>(it->second);
+        return it->second.get<int64_t>();
     }
 
     int64_t getTransb() const  {
-        auto it = findAttribute("transB");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("transB");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got transB attr" << " by default." << std::endl;
             return int64_t(0);
         }
 
         std::cout << "Got transB attr." << std::endl;
-        return std::get<int64_t>(it->second);
+        return it->second.get<int64_t>();
     }
 
 
@@ -179,7 +183,7 @@ struct OpGemm {
             return false;
         }
 
-        if (Oper->getNumOperands() != 3) {
+        if (Oper->getNumOperands() != 2) {
             return false;
         }
 
@@ -190,23 +194,23 @@ struct OpGemm {
         return true;
     }
 };
-struct OpAdd {
-    explicit Add(Operation* Oper) : Op<Add>(Oper) {}
-    ~Add = default;
+struct OpAdd : Op<OpAdd>{
+    using Op<OpAdd>::Op; // inheriting constructor
+    ~OpAdd() = default;
 
     static std::string getOperationName() {
-        return "Add"
+        return "Add";
     }
 
-    OpOperand getA() {
+    OpOperand getLhs() const {
         return Oper->getOperandValue(0);
     }
 
-    OpOperand getB() {
+    OpOperand getRhs() const {
         return Oper->getOperandValue(1);
     }
 
-    OpResult getC() {
+    OpResult getOutput() const {
         return Oper->getResultValue(0);
     }
 
@@ -228,19 +232,19 @@ struct OpAdd {
         return true;
     }
 };
-struct OpRelu {
-    explicit Relu(Operation* Oper) : Op<Relu>(Oper) {}
-    ~Relu = default;
+struct OpRelu : Op<OpRelu>{
+    using Op<OpRelu>::Op; // inheriting constructor
+    ~OpRelu() = default;
 
     static std::string getOperationName() {
-        return "Relu"
+        return "Relu";
     }
 
-    OpOperand getX() {
+    OpOperand getInput() const {
         return Oper->getOperandValue(0);
     }
 
-    OpResult getY() {
+    OpResult getOutput() const {
         return Oper->getResultValue(0);
     }
 
@@ -262,23 +266,23 @@ struct OpRelu {
         return true;
     }
 };
-struct OpMul {
-    explicit Mul(Operation* Oper) : Op<Mul>(Oper) {}
-    ~Mul = default;
+struct OpMul : Op<OpMul>{
+    using Op<OpMul>::Op; // inheriting constructor
+    ~OpMul() = default;
 
     static std::string getOperationName() {
-        return "Mul"
+        return "Mul";
     }
 
-    OpOperand getA() {
+    OpOperand getLhs() const {
         return Oper->getOperandValue(0);
     }
 
-    OpOperand getB() {
+    OpOperand getRhs() const {
         return Oper->getOperandValue(1);
     }
 
-    OpResult getC() {
+    OpResult getOutput() const {
         return Oper->getResultValue(0);
     }
 
@@ -300,23 +304,23 @@ struct OpMul {
         return true;
     }
 };
-struct OpMatMul {
-    explicit MatMul(Operation* Oper) : Op<MatMul>(Oper) {}
-    ~MatMul = default;
+struct OpMatMul : Op<OpMatMul>{
+    using Op<OpMatMul>::Op; // inheriting constructor
+    ~OpMatMul() = default;
 
     static std::string getOperationName() {
-        return "MatMul"
+        return "MatMul";
     }
 
-    OpOperand getA() {
+    OpOperand getLhs() const {
         return Oper->getOperandValue(0);
     }
 
-    OpOperand getB() {
+    OpOperand getRhs() const {
         return Oper->getOperandValue(1);
     }
 
-    OpResult getY() {
+    OpResult getOutput() const {
         return Oper->getResultValue(0);
     }
 
@@ -338,104 +342,106 @@ struct OpMatMul {
         return true;
     }
 };
-struct OpMaxPool {
-    explicit MaxPool(Operation* Oper) : Op<MaxPool>(Oper) {}
-    ~MaxPool = default;
+struct OpMaxPool : Op<OpMaxPool>{
+    using Op<OpMaxPool>::Op; // inheriting constructor
+    ~OpMaxPool() = default;
 
     static std::string getOperationName() {
-        return "MaxPool"
+        return "MaxPool";
     }
 
-    OpOperand getX() {
+    OpOperand getInput() const {
         return Oper->getOperandValue(0);
     }
 
-    OpResult getY() {
+    OpResult getOutput() const {
         return Oper->getResultValue(0);
     }
 
-    OpOperand getIndices() {
-        assert(Oper->getNumResults() >= 1);
-        return Oper->getResultValue(1);
+    std::optional<OpResult> getIndices() const {
+        return Oper->getNumResults() > 1 ?
+            std::optional(Oper->getResultValue(1)) : std::nullopt;
     }
 
-    std::vector<int64_t> getKernelShape() const  {
-        auto it = findAttribute("kernel_shape");
-        assert(it == attributesEnd());
-        std::cout << "Got kernel_shape attr" << std::endl;
-        return std::get<std::vector<int64_t>>(it->second);
+    std::optional<std::vector<int64_t>> getKernelShape() const  {
+        auto it = Oper->findAttribute("kernel_shape");
+        if (it != Oper->attributesEnd()) {
+            std::cout << "Got kernel_shape attr" << std::endl;
+            return it->second.get<std::vector<int64_t>>();
+        }
+        return std::nullopt;
     }
 
     std::string getAutoPad() const  {
-        auto it = findAttribute("auto_pad");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("auto_pad");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got auto_pad attr" << " by default." << std::endl;
             return std::string("NOTSET");
         }
 
         std::cout << "Got auto_pad attr." << std::endl;
-        return std::get<std::string>(it->second);
+        return it->second.get<std::string>();
     }
 
     int64_t getCeilMode() const  {
-        auto it = findAttribute("ceil_mode");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("ceil_mode");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got ceil_mode attr" << " by default." << std::endl;
             return int64_t(0);
         }
 
         std::cout << "Got ceil_mode attr." << std::endl;
-        return std::get<int64_t>(it->second);
+        return it->second.get<int64_t>();
     }
 
     std::vector<int64_t> getDilations() const  {
-        auto it = findAttribute("dilations");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("dilations");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got dilations attr" << " by default." << std::endl;
             return std::vector<int64_t>({1, 1});
         }
 
         std::cout << "Got dilations attr." << std::endl;
-        return std::get<std::vector<int64_t>>(it->second);
+        return it->second.get<std::vector<int64_t>>();
     }
 
     std::vector<int64_t> getPads() const  {
-        auto it = findAttribute("pads");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("pads");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got pads attr" << " by default." << std::endl;
             return std::vector<int64_t>({0, 0});
         }
 
         std::cout << "Got pads attr." << std::endl;
-        return std::get<std::vector<int64_t>>(it->second);
+        return it->second.get<std::vector<int64_t>>();
     }
 
     int64_t getStorageOrder() const  {
-        auto it = findAttribute("storage_order");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("storage_order");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got storage_order attr" << " by default." << std::endl;
             return int64_t(0);
         }
 
         std::cout << "Got storage_order attr." << std::endl;
-        return std::get<int64_t>(it->second);
+        return it->second.get<int64_t>();
     }
 
     std::vector<int64_t> getStrides() const  {
-        auto it = findAttribute("strides");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("strides");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got strides attr" << " by default." << std::endl;
             return std::vector<int64_t>({1, 1});
         }
 
         std::cout << "Got strides attr." << std::endl;
-        return std::get<std::vector<int64_t>>(it->second);
+        return it->second.get<std::vector<int64_t>>();
     }
 
 
@@ -448,7 +454,7 @@ struct OpMaxPool {
             return false;
         }
 
-        if (Oper->getNumResults() != 2) {
+        if (Oper->getNumResults() != 1) {
             return false;
         }
 

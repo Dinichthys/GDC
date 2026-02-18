@@ -22,7 +22,7 @@
       required: true
 
     - name: group
-      type: ints
+      type: int64
       default: 1
 
     - name: dilations

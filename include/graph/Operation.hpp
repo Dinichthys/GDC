@@ -1,14 +1,40 @@
+#pragma once
+
 #include <cassert>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <variant>
 
 #include "Value.hpp"
 
 
 namespace GiantGraph {
-class Attribute {};
+class Attribute {
+
+  using Value = std::variant<
+    int64_t,
+    std::vector<int64_t>,
+    float,
+    std::vector<float>,
+    std::string,
+    std::vector<std::string>
+
+    //NOTE - also add tensor, std::vector<tensor>
+  >;
+
+  public:
+  Attribute() = default;
+  template<typename T>
+  Attribute(T value) : value_(std::move(value)) {}
+
+  template <typename T>
+  T get() const { return std::get<T>(value_); }
+
+  private:
+    Value value_;
+};
 
 class Operation {
 public:

@@ -27,9 +27,11 @@ end
 
 def generate_header
     <<~HEADER
-    #include "graph/Op.hpp"
+    #pragma once
+    #include <optional>
     #include <memory>
     #include <string>
+    #include "graph/Op.hpp"
     namespace GiantGraph {
 
     HEADER
@@ -40,18 +42,27 @@ def generate_footer
     } // namespace GiantGraph
     FOOTER
 end
+
+def count_required(io_list)
+    io_list.count { |item| !item["optional"] }
+end
+
+def count_total(io_list)
+    io_list.length
+end
+
 def generate_input(input, index)
     name = input["semantic"]
     if input.key?("optional")
 <<-CPP
-    OpOperand get#{camelize(name)}() {
-        assert(Oper->getNumOperands() >= #{index});
-        return Oper->getOperandValue(#{index});
+    std::optional<OpOperand> get#{camelize(name)}() const {
+        return Oper->getNumOperands() > #{index} ?
+            std::optional(Oper->getOperandValue(#{index})) : std::nullopt;
     }
     CPP
     else
 <<-CPP
-    OpOperand get#{camelize(name)}() {
+    OpOperand get#{camelize(name)}() const {
         return Oper->getOperandValue(#{index});
     }
     CPP
@@ -62,14 +73,14 @@ def generate_output(output, index)
     name = output["semantic"]
     if output.key?("optional")
 <<-CPP
-    OpOperand get#{camelize(name)}() {
-        assert(Oper->getNumResults() >= #{index});
-        return Oper->getResultValue(#{index});
+    std::optional<OpResult> get#{camelize(name)}() const {
+        return Oper->getNumResults() > #{index} ?
+            std::optional(Oper->getResultValue(#{index})) : std::nullopt;
     }
     CPP
     else
 <<-CPP
-    OpResult get#{camelize(name)}() {
+    OpResult get#{camelize(name)}() const {
         return Oper->getResultValue(#{index});
     }
     CPP
@@ -83,24 +94,26 @@ def generate_attr(attr, op_name)
         formatted_val = format_value(attr["default"])
 <<-CPP
     #{type} get#{camelize(name)}() const  {
-        auto it = findAttribute("#{name}");
-        if (it == attributeEnd()) {
+        auto it = Oper->findAttribute("#{name}");
+        if (it == Oper->attributesEnd()) {
 
         std::cout << "Got #{name} attr" << " by default." << std::endl;
             return #{type}(#{formatted_val});
         }
 
         std::cout << "Got #{name} attr." << std::endl;
-        return std::get<#{type}>(it->second);
+        return it->second.get<#{type}>();
     }
     CPP
     else
 <<-CPP
-    #{type} get#{camelize(name)}() const  {
-        auto it = findAttribute("#{name}");
-        assert(it == attributesEnd());
-        std::cout << "Got #{name} attr" << std::endl;
-        return std::get<#{type}>(it->second);
+    std::optional<#{type}> get#{camelize(name)}() const  {
+        auto it = Oper->findAttribute("#{name}");
+        if (it != Oper->attributesEnd()) {
+            std::cout << "Got #{name} attr" << std::endl;
+            return it->second.get<#{type}>();
+        }
+        return std::nullopt;
     }
     CPP
     end
@@ -127,12 +140,12 @@ def generate_op(op)
     end
 
     <<~CPP
-    struct Op#{name} {
-        explicit #{name}(Operation* Oper) : Op<#{name}>(Oper) {}
-        ~#{name} = default;
+    struct Op#{name} : Op<Op#{name}>{
+        using Op<Op#{name}>::Op; // inheriting constructor
+        ~Op#{name}() = default;
 
         static std::string getOperationName() {
-            return "#{name}"
+            return "#{name}";
         }
 
     #{inputs.join("\n")}
@@ -144,11 +157,11 @@ def generate_op(op)
                 return false;
             }
 
-            if (Oper->getNumOperands() != #{inputs.length}) {
+            if (Oper->getNumOperands() != #{count_required(inputs)}) {
                 return false;
             }
 
-            if (Oper->getNumResults() != #{outputs.length}) {
+            if (Oper->getNumResults() != #{count_required(outputs)}) {
                 return false;
             }
 

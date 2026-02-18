@@ -6,6 +6,7 @@
 #include "graph/Graph.hpp"
 #include "graph/GraphBuilder.hpp"
 #include "graph/GraphVizard.hpp"
+#include "graph/ExactRappers.hpp"
 
 int main(int argc, char **argv) {
   CLI::App CLIApp;
