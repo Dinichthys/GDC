@@ -1,12 +1,6 @@
 [submodule "external/Catch2"]
 	path = external/Catch2
 	url = https://github.com/catchorg/Catch2.git
-[submodule "external/onnx"]
-	path = external/onnx
-	url = https://github.com/onnx/onnx
-[submodule "external/CLI11"]
-	path = external/CLI11
-	url = git@github.com:CLIUtils/CLI11.git
 [submodule "external/--force"]
 	path = external/--force
 	url = git@github.com:CLIUtils/CLI11.git
