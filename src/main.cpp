@@ -1,7 +1,6 @@
 #include <CLI/App.hpp>
 #include <CLI/Config.hpp>
 #include <CLI/Formatter.hpp>
-#include <onnx.pb.h>
 
 #include "graph/Graph.hpp"
 #include "graph/GraphBuilder.hpp"

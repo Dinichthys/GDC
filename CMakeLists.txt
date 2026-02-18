@@ -9,6 +9,68 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 set(TEST_EXEC_NAME "${PROJECT_NAME}Tests")
 
 # -----------------------------
+# CPM Setup
+# -----------------------------
+include(cmake/CPM.cmake) # <-- download CPM.cmake once into cmake/
+
+# -----------------------------
+# Dependencies via CPM
+# -----------------------------
+
+CPMAddPackage(
+    NAME CLI11
+    GITHUB_REPOSITORY CLIUtils/CLI11
+    GIT_TAG v2.3.2
+)
+
+CPMAddPackage(
+    NAME onnx_proto_only
+    GITHUB_REPOSITORY onnx/onnx
+    GIT_TAG v1.15.0
+    DOWNLOAD_ONLY TRUE
+)
+
+
+# -----------------------------
+# Protobuf generation (ONNX)
+# -----------------------------
+
+find_package(Protobuf REQUIRED)
+
+set(ONNX_PROTO_ROOT
+    ${onnx_proto_only_SOURCE_DIR}
+)
+
+set(ONNX_PROTO_FILE
+    ${ONNX_PROTO_ROOT}/onnx/onnx.proto
+)
+
+set(ONNX_GENERATED_DIR
+    ${CMAKE_CURRENT_BINARY_DIR}/generated
+)
+
+file(MAKE_DIRECTORY ${ONNX_GENERATED_DIR})
+
+protobuf_generate(
+    LANGUAGE cpp
+    PROTOS ${ONNX_PROTO_FILE}
+    IMPORT_DIRS ${ONNX_PROTO_ROOT}
+    PROTOC_OUT_DIR ${ONNX_GENERATED_DIR}
+    APPEND_PATH
+    OUT_VAR ONNX_SRCS
+)
+
+add_library(onnx_proto STATIC ${ONNX_SRCS})
+
+target_link_libraries(onnx_proto
+    PUBLIC protobuf::libprotobuf
+)
+
+target_include_directories(onnx_proto
+    PUBLIC ${ONNX_GENERATED_DIR}
+)
+
+# -----------------------------
 # Compiler options
 # -----------------------------
 set(COMMON_COMPILE_OPTIONS
@@ -33,45 +95,6 @@ set(RELEASE_COMPILE_OPTIONS
     -O2
     -DNDEBUG
 )
-
-find_package(Protobuf REQUIRED)
-
-set(ONNX_PROTO_DIR
-    ${CMAKE_SOURCE_DIR}/external/onnx/onnx
-)
-
-set(ONNX_PROTO_FILE
-    ${ONNX_PROTO_DIR}/onnx.proto
-)
-
-protobuf_generate_cpp(
-    ONNX_PROTO_SRCS
-    ONNX_PROTO_HDRS
-    ${ONNX_PROTO_FILE}
-)
-
-set(ONNX_PROTO_EXEC onnx_proto)
-
-add_library(${ONNX_PROTO_EXEC}
-    ${ONNX_PROTO_SRCS}
-)
-
-target_include_directories(${ONNX_PROTO_EXEC}
-    PUBLIC
-        ${CMAKE_CURRENT_BINARY_DIR}
-        ${ONNX_PROTO_DIR}
-)
-
-target_link_libraries(${ONNX_PROTO_EXEC}
-    PUBLIC
-        protobuf::libprotobuf
-)
-
-# -----------------------------
-# CLI11
-# -----------------------------
-
-add_subdirectory(external/CLI11)
 
 # -----------------------------
 # Compiler executable
@@ -108,7 +131,6 @@ target_compile_options(${PROJECT_NAME}
 
 target_link_options(${PROJECT_NAME}
     PRIVATE
-        -march=native
         $<$<CONFIG:Debug>:${DEBUG_COMPILE_OPTIONS}>
         $<$<CONFIG:Release>:${RELEASE_COMPILE_OPTIONS}>
 )
@@ -116,13 +138,18 @@ target_link_options(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
     CLI11::CLI11
-    ${ONNX_PROTO_EXEC}
+    onnx_proto
 )
 
 # -----------------------------
 # Catch2 test executable
 # -----------------------------
-find_package(Catch2 3 REQUIRED)
+
+CPMAddPackage(
+    NAME Catch2
+    GITHUB_REPOSITORY catchorg/Catch2
+    GIT_TAG v3.5.2
+)
 
 add_executable(${TEST_EXEC_NAME}
     tests/Test.cpp
@@ -146,7 +173,7 @@ target_include_directories(${TEST_EXEC_NAME}
 target_link_libraries(${TEST_EXEC_NAME}
     PRIVATE Catch2::Catch2WithMain
     CLI11::CLI11
-    ${ONNX_PROTO_EXEC}
+    onnx_proto
 )
 
 target_compile_options(${TEST_EXEC_NAME}
@@ -158,7 +185,6 @@ target_compile_options(${TEST_EXEC_NAME}
 
 target_link_options(${TEST_EXEC_NAME}
     PRIVATE
-        -march=native
         $<$<CONFIG:Debug>:${DEBUG_COMPILE_OPTIONS}>
         $<$<CONFIG:Release>:${RELEASE_COMPILE_OPTIONS}>
 )
@@ -169,5 +195,5 @@ target_link_options(${TEST_EXEC_NAME}
 enable_testing()
 add_test(NAME UnitTests COMMAND ${TEST_EXEC_NAME})
 
-# cmake -B build -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang
+# cmake -B build -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++
 # cmake --build build
