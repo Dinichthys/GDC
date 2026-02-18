@@ -3,14 +3,18 @@
 - name: Conv
   inputs:
     - name: X
+      semantic: input
 
     - name: W
+      semantic: filter
 
     - name: B
+      semantic: bias
       optional: true
 
   outputs:
     - name: Y
+      semantic: output
 
   attributes:
     - name: kernel_shape
@@ -38,14 +42,18 @@
 - name: Gemm
   inputs:
     - name: A
+      semantic: lhs
 
     - name: B
+      semantic: rhs
 
     - name: C
+      semantic: bias
       optional: true
 
   outputs:
     - name: Y
+      semantic: output
 
   attributes:
     - name: alpha
@@ -71,10 +79,14 @@
 - name: Add
   inputs:
     - name: A
+      semantic: lhs
+
     - name: B
+      semantic: rhs
 
   outputs:
     - name: C
+      semantic: output
   attributes:
 
 
@@ -83,9 +95,11 @@
 - name: Relu
   inputs:
     - name: X
+      semantic: input
 
   outputs:
     - name: Y
+      semantic: output
 
   attributes:
 
@@ -95,11 +109,14 @@
 - name: Mul
   inputs:
     - name: A
+      semantic: lhs
 
     - name: B
+      semantic: rhs
 
   outputs:
     - name: C
+      semantic: output
 
   attributes:
 
@@ -109,11 +126,14 @@
 - name: MatMul
   inputs:
     - name: A
+      semantic: lhs
 
     - name: B
+      semantic: rhs
 
   outputs:
     - name: Y
+      semantic: output
     #NOTE - maybe add matmul verification syntax ???
 
   attributes:
@@ -124,11 +144,15 @@
 - name: MaxPool
   inputs:
     - name: X
+      semantic: input
+
 
   outputs:
     - name: Y
+      semantic: output
 
     - name: Indices
+      semantic: Indices
       optional: true
 
   attributes:

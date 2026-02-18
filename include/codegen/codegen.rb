@@ -41,7 +41,7 @@ def generate_footer
     FOOTER
 end
 def generate_input(input, index)
-    name = input["name"]
+    name = input["semantic"]
     if input.key?("optional")
 <<-CPP
     OpOperand get#{camelize(name)}() {
@@ -59,7 +59,7 @@ def generate_input(input, index)
 end
 
 def generate_output(output, index)
-    name = output["name"]
+    name = output["semantic"]
     if output.key?("optional")
 <<-CPP
     OpOperand get#{camelize(name)}() {
