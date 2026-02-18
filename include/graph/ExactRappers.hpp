@@ -28,7 +28,7 @@ struct OpConv {
         return Oper->getResultValue(0);
     }
 
-    std::vector<int64_t> kernel_shape() const  {
+    std::vector<int64_t> getKernelShape() const  {
         auto it = findAttribute("kernel_shape");
         assert(it == attributesEnd());
         std::cout << "Got kernel_shape attr" << std::endl;
@@ -359,14 +359,14 @@ struct OpMaxPool {
         return Oper->getResultValue(1);
     }
 
-    std::vector<int64_t> kernel_shape() const  {
+    std::vector<int64_t> getKernelShape() const  {
         auto it = findAttribute("kernel_shape");
         assert(it == attributesEnd());
         std::cout << "Got kernel_shape attr" << std::endl;
         return std::get<std::vector<int64_t>>(it->second);
     }
 
-    std::string getAuto_pad() const  {
+    std::string getAutoPad() const  {
         auto it = findAttribute("auto_pad");
         if (it == attributeEnd()) {
 
@@ -378,7 +378,7 @@ struct OpMaxPool {
         return std::get<std::string>(it->second);
     }
 
-    int64_t getCeil_mode() const  {
+    int64_t getCeilMode() const  {
         auto it = findAttribute("ceil_mode");
         if (it == attributeEnd()) {
 
@@ -414,7 +414,7 @@ struct OpMaxPool {
         return std::get<std::vector<int64_t>>(it->second);
     }
 
-    int64_t getStorage_order() const  {
+    int64_t getStorageOrder() const  {
         auto it = findAttribute("storage_order");
         if (it == attributeEnd()) {
 

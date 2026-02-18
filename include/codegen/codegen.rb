@@ -21,6 +21,10 @@ def format_value(value)
 
 end
 
+def camelize(snake_case)
+    snake_case.split('_').map(&:capitalize).join
+end
+
 def generate_header
     <<~HEADER
     #include "graph/Op.hpp"
@@ -40,14 +44,14 @@ def generate_input(input, index)
     name = input["name"]
     if input.key?("optional")
 <<-CPP
-    OpOperand get#{name}() {
+    OpOperand get#{camelize(name)}() {
         assert(Oper->getNumOperands() >= #{index});
         return Oper->getOperandValue(#{index});
     }
     CPP
     else
 <<-CPP
-    OpOperand get#{name}() {
+    OpOperand get#{camelize(name)}() {
         return Oper->getOperandValue(#{index});
     }
     CPP
@@ -58,14 +62,14 @@ def generate_output(output, index)
     name = output["name"]
     if output.key?("optional")
 <<-CPP
-    OpOperand get#{name}() {
+    OpOperand get#{camelize(name)}() {
         assert(Oper->getNumResults() >= #{index});
         return Oper->getResultValue(#{index});
     }
     CPP
     else
 <<-CPP
-    OpResult get#{name}() {
+    OpResult get#{camelize(name)}() {
         return Oper->getResultValue(#{index});
     }
     CPP
@@ -78,7 +82,7 @@ def generate_attr(attr, op_name)
     if attr.key?("default")
         formatted_val = format_value(attr["default"])
 <<-CPP
-    #{type} get#{name.capitalize}() const  {
+    #{type} get#{camelize(name)}() const  {
         auto it = findAttribute("#{name}");
         if (it == attributeEnd()) {
 
@@ -92,7 +96,7 @@ def generate_attr(attr, op_name)
     CPP
     else
 <<-CPP
-    #{type} #{name}() const  {
+    #{type} get#{camelize(name)}() const  {
         auto it = findAttribute("#{name}");
         assert(it == attributesEnd());
         std::cout << "Got #{name} attr" << std::endl;
