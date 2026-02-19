@@ -1,0 +1,187 @@
+#NOTE -  look for official spec at https://onnx.ai/onnx/operators/
+
+- name: Conv
+  inputs:
+    - name: X
+      semantic: input
+
+    - name: W
+      semantic: filter
+
+    - name: B
+      semantic: bias
+      optional: true
+
+  outputs:
+    - name: Y
+      semantic: output
+
+  attributes:
+    - name: kernel_shape
+      type: int64[]
+      required: true
+
+    - name: group
+      type: int64
+      default: 1
+
+    - name: dilations
+      type: int64[]
+      default: [1, 1]
+
+    - name: pads
+      type: int64[]
+      default: [0, 0]
+
+    - name: strides
+      type: int64[]
+      default: [1, 1]
+
+#######################################################
+
+- name: Gemm
+  inputs:
+    - name: A
+      semantic: lhs
+
+    - name: B
+      semantic: rhs
+
+    - name: C
+      semantic: bias
+      optional: true
+
+  outputs:
+    - name: Y
+      semantic: output
+
+  attributes:
+    - name: alpha
+      type: float32
+      default: 1.0
+
+
+    - name: beta
+      type: float32
+      default: 1.0
+
+    - name: transA
+      type: int64
+      default: 0
+
+    - name: transB
+      type: int64
+      default: 0
+
+
+#######################################################
+
+- name: Add
+  inputs:
+    - name: A
+      semantic: lhs
+
+    - name: B
+      semantic: rhs
+
+  outputs:
+    - name: C
+      semantic: output
+  attributes:
+
+
+#######################################################
+
+- name: Relu
+  inputs:
+    - name: X
+      semantic: input
+
+  outputs:
+    - name: Y
+      semantic: output
+
+  attributes:
+
+
+#######################################################
+
+- name: Mul
+  inputs:
+    - name: A
+      semantic: lhs
+
+    - name: B
+      semantic: rhs
+
+  outputs:
+    - name: C
+      semantic: output
+
+  attributes:
+
+
+#######################################################
+
+- name: MatMul
+  inputs:
+    - name: A
+      semantic: lhs
+
+    - name: B
+      semantic: rhs
+
+  outputs:
+    - name: Y
+      semantic: output
+    #NOTE - maybe add matmul verification syntax ???
+
+  attributes:
+
+
+#######################################################
+
+- name: MaxPool
+  inputs:
+    - name: X
+      semantic: input
+
+
+  outputs:
+    - name: Y
+      semantic: output
+
+    - name: Indices
+      semantic: Indices
+      optional: true
+
+  attributes:
+    - name: kernel_shape
+      type: int64[]
+      required: true
+
+    - name: auto_pad
+      type: string
+      default: '"NOTSET"'
+
+    - name: ceil_mode
+      type: int64
+      default: 0
+
+    - name: dilations
+      type: int64[]
+      default: [1, 1]
+
+    - name: pads
+      type: int64[]
+      default: [0, 0]
+
+    - name: storage_order
+      type: int64
+      default: 0
+
+    - name: strides
+      type: int64[]
+      default: [1, 1]
+
+#######################################################

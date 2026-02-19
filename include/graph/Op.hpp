@@ -4,7 +4,6 @@
 namespace GiantGraph {
 
 template <typename ExactOp>
-
 class Op {
 protected:
   Operation *Oper;
