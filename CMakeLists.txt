@@ -120,11 +120,6 @@ set_target_properties(${PROJECT_NAME}
 )
 
 target_include_directories(${PROJECT_NAME}
-    SYSTEM PRIVATE
-    external/onnx
-)
-
-target_include_directories(${PROJECT_NAME}
     PRIVATE include
 )
 
