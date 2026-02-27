@@ -43,3 +43,15 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TARGET=GiantDadTests -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DCMAKE_CXX_COMPILER=${{matrix.compiler}}
           cmake --build build
+      - name: test
+        run: |
+          ./GiantDadTests
+  footjob:
+    needs: build-cmake, tests
+    runs-on: ubuntu-latest
+    if: ${{ success() }}
+    steps:
+      - name: chill-drill
+        run: |
+          echo Hello foot world
+

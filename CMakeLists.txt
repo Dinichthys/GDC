@@ -100,6 +100,12 @@ set(RELEASE_COMPILE_OPTIONS
 # Compiler executable
 # -----------------------------
 
+set(LOG_DIR
+    ${CMAKE_CURRENT_BINARY_DIR}/log
+)
+
+file(MAKE_DIRECTORY ${LOG_DIR})
+
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/graph/GraphBuilder.cpp
@@ -153,6 +159,10 @@ CPMAddPackage(
 
 add_executable(${TEST_EXEC_NAME}
     tests/Test.cpp
+
+    src/graph/GraphBuilder.cpp
+    src/graph/Value.cpp
+    src/graph/DumpGraphViz.cpp
 )
 
 set_target_properties(${TEST_EXEC_NAME}
@@ -162,12 +172,8 @@ set_target_properties(${TEST_EXEC_NAME}
 )
 
 target_include_directories(${TEST_EXEC_NAME}
-    SYSTEM PRIVATE
-    external/onnx
-)
-
-target_include_directories(${TEST_EXEC_NAME}
     PRIVATE include
+    tests/include
 )
 
 target_link_libraries(${TEST_EXEC_NAME}
