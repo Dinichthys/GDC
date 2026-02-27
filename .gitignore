@@ -1,4 +1,6 @@
 build
+log
+external/Catch2
 .cache
 GiantDad
 GiantDadTests

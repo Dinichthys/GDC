@@ -38,7 +38,7 @@ void dumpGraphViz(const GiantGraph::GiantGraph &GiantGraph) {
   }
   GraphVizString += "\n}\n";
   std::fstream GraphVizFile;
-  GraphVizFile.open("dot.dot", std::ios::out);
+  GraphVizFile.open(DOT_LOG_FILE_NAME, std::ios::out);
   if (!GraphVizFile.is_open()) {
     throw(std::runtime_error("Cannot open dot file, casul"));
   }
