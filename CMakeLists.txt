@@ -114,11 +114,6 @@ set_target_properties(${PROJECT_NAME}
 )
 
 target_include_directories(${PROJECT_NAME}
-    SYSTEM PRIVATE
-    external/onnx
-)
-
-target_include_directories(${PROJECT_NAME}
     PRIVATE include
 )
 
@@ -159,11 +154,6 @@ set_target_properties(${TEST_EXEC_NAME}
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}
     CMAKE_CXX_CLANG_TIDY "clang-tidy"
-)
-
-target_include_directories(${TEST_EXEC_NAME}
-    SYSTEM PRIVATE
-    external/onnx
 )
 
 target_include_directories(${TEST_EXEC_NAME}
