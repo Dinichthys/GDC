@@ -15,9 +15,9 @@ Firstly we read a graph of a model from `.onnx` files, which are placed in folde
 
 ### Visual dump
 
-As an example of **GraphViz** dump we have this picture, which shows the structure of the model from [this file](models/resnet18-v1-7.onnx)
+As an example of **GraphViz** dump we have this picture, which shows the structure of the model from [this file](models/Add.onnx)
 
-![Model graph]()
+![Model graph](images/Add.svg)
 
 ## CodeGen
 
