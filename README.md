@@ -21,15 +21,6 @@ As an example of node from **GraphViz** dump we have this picture, which shows t
 
 We also have a visual dump of a large model. You can see it in [images/Model.pdf](images/Model.pdf) or just open this Google Doc Viewer:
 
-
-<details>
-<summary> Preview the large model </summary>
-<iframe src="https://docs.google.com/gview?url=https://github.com/Dinichthys/GDC/blob/main/images/Model.svg&embedded=true"
-        style="width:100%; height:600px;"
-        frameborder="0">
-</iframe>
-</details>
-
 ## CodeGen
 
 We add **codegen** to make a simple way for adding more instructions and implement wrappers for them for getting a more suitable operation of getting a concrete attribute or parameter by it's name but not by index.
