@@ -15,9 +15,11 @@ Firstly we read a graph of a model from `.onnx` files, which are placed in folde
 
 ### Visual dump
 
-As an example of **GraphViz** dump we have this picture, which shows the structure of the model from [this file](models/Add.onnx)
+As an example of node from **GraphViz** dump we have this picture, which shows the structure of the node `ADD` from [this file](models/Add.onnx)
 
 ![Model graph](images/Add.svg)
+
+We also have a visual dump of a large model. You can see it in [images/Model.pdf](images/Model.pdf).
 
 ## CodeGen
 
