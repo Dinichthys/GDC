@@ -74,6 +74,7 @@ target_include_directories(onnx_proto
 # Compiler options
 # -----------------------------
 set(COMMON_COMPILE_OPTIONS
+    -I/usr/lib/llvm-17/include
     -fdiagnostics-color=always
     -Wall
     -Wextra
@@ -111,6 +112,7 @@ add_executable(${PROJECT_NAME}
     src/graph/GraphBuilder.cpp
     src/graph/Value.cpp
     src/graph/DumpGraphViz.cpp
+    src/MLIR/BuildMLIR.cpp
 )
 
 set_target_properties(${PROJECT_NAME}

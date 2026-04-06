@@ -30,6 +30,10 @@ We also have a visual dump of a large model. You can see it in [images/Model.pdf
 </iframe>
 </details>
 
+### MLIR and LLVM IR
+
+After reading graph we build **MLIR** module and translate it to **LLVM IR** to build for target machine.
+
 ## CodeGen
 
 We add **codegen** to make a simple way for adding more instructions and implement wrappers for them for getting a more suitable operation of getting a concrete attribute or parameter by it's name but not by index.
