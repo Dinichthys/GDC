@@ -6,6 +6,11 @@
 #include "graph/GraphBuilder.hpp"
 #include "graph/GraphVizard.hpp"
 
+#include "MLIR/BuildMLIR.hpp"
+
+#include "mlir/Target/LLVMIR/Export.h"
+#include "llvm/IR/Module.h"
+
 int main(int argc, char **argv) {
   CLI::App CLIApp;
   std::string ModelFileName;
@@ -16,5 +21,10 @@ int main(int argc, char **argv) {
   GiantGraph::GraphBuilder GBuilder{ModelFileName};
   GiantGraph::GiantGraph Graph = GBuilder.buildGraph();
   GraphVizardry::dumpGraphViz(Graph);
+
+  auto MLIRModule = MLIRBuild::buildModule(Graph);
+  llvm::LLVMContext LLVMContext;
+  auto llvmModule = mlir::translateModuleToLLVMIR(MLIRModule, LLVMContext);
+
   return 0;
 }

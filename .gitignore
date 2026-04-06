@@ -5,3 +5,4 @@ external/Catch2
 GiantDad
 GiantDadTests
 *.dot
+.clangd
